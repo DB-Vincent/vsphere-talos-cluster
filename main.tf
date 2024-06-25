@@ -77,14 +77,6 @@ data "talos_machine_configuration" "worker" {
   ]
 }
 
-data "talos_client_configuration" "this" {
-  cluster_name         = var.cluster_name
-  client_configuration = talos_machine_secrets.this.client_configuration
-  endpoints = [
-    for i in range(var.cluster_control_plane_count) : cidrhost(var.cluster_network_cidr, var.cluster_network_first_control_plane_hostnum + i)
-  ]
-}
-
 resource "talos_machine_bootstrap" "this" {
   client_configuration = talos_machine_secrets.this.client_configuration
   endpoint             = cidrhost(var.cluster_network_cidr, var.cluster_network_first_control_plane_hostnum)
@@ -155,8 +147,8 @@ resource "vsphere_virtual_machine" "control_plane" {
       ept_rvi_mode,
       hv_mode,
       folder,
-      disk.0.io_share_count,
-      disk.0.thin_provisioned
+      disk[0].io_share_count,
+      disk[0].thin_provisioned
     ]
   }
 }
@@ -200,8 +192,8 @@ resource "vsphere_virtual_machine" "worker" {
       ept_rvi_mode,
       hv_mode,
       folder,
-      disk.0.io_share_count,
-      disk.0.thin_provisioned
+      disk[0].io_share_count,
+      disk[0].thin_provisioned
     ]
   }
 
