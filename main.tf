@@ -3,7 +3,7 @@ resource "talos_machine_secrets" "this" {
 }
 
 data "talos_machine_configuration" "control_plane" {
-  count = var.cluster_control_plane_count
+  for_each = local.control_plane_node_names
 
   cluster_name     = var.cluster_name
   machine_type     = "controlplane"
@@ -17,12 +17,12 @@ data "talos_machine_configuration" "control_plane" {
           disk = "/dev/sda"
         }
         network = {
-          hostname = "${var.cluster_name}-control-plane-${count.index}"
+          hostname = each.value
           interfaces = [
             {
               interface = "eth0"
               dhcp      = false
-              addresses = ["${cidrhost(var.cluster_network_cidr, var.cluster_network_first_control_plane_hostnum + count.index)}/${tonumber(split("/", var.cluster_network_cidr)[1])}"]
+              addresses = ["${cidrhost(var.cluster_network_cidr, var.cluster_network_first_control_plane_hostnum + index(tolist(local.control_plane_node_names), each.value))}/${tonumber(split("/", var.cluster_network_cidr)[1])}"]
               routes = [
                 {
                   network = "0.0.0.0/0"
@@ -42,7 +42,7 @@ data "talos_machine_configuration" "control_plane" {
 }
 
 data "talos_machine_configuration" "worker" {
-  count = var.cluster_control_plane_count
+  for_each = local.worker_node_names
 
   cluster_name     = var.cluster_name
   machine_type     = "worker"
@@ -56,12 +56,12 @@ data "talos_machine_configuration" "worker" {
           disk = "/dev/sda"
         }
         network = {
-          hostname = "${var.cluster_name}-worker-${count.index}"
+          hostname = each.value
           interfaces = [
             {
               interface = "eth0"
               dhcp      = false
-              addresses = ["${cidrhost(var.cluster_network_cidr, var.cluster_network_first_worker_hostnum + count.index)}/${tonumber(split("/", var.cluster_network_cidr)[1])}"]
+              addresses = ["${cidrhost(var.cluster_network_cidr, var.cluster_network_first_worker_hostnum + index(tolist(local.worker_node_names), each.value))}/${tonumber(split("/", var.cluster_network_cidr)[1])}"]
               routes = [
                 {
                   network = "0.0.0.0/0"
@@ -115,9 +115,9 @@ resource "vsphere_folder" "this" {
 }
 
 resource "vsphere_virtual_machine" "control_plane" {
-  count  = var.cluster_control_plane_count
-  name   = "${var.cluster_name}-control-plane-${count.index}"
-  folder = "${var.vsphere_datacenter}/vm/${var.cluster_name}"
+  for_each = local.control_plane_node_names
+  name     = each.value
+  folder   = "${var.vsphere_datacenter}/vm/${var.cluster_name}"
 
   datastore_id     = data.vsphere_datastore.this.id
   datacenter_id    = data.vsphere_datacenter.this.id
@@ -145,7 +145,7 @@ resource "vsphere_virtual_machine" "control_plane" {
   enable_disk_uuid = "true"
 
   extra_config = {
-    "guestinfo.talos.config" = base64encode(data.talos_machine_configuration.control_plane[count.index].machine_configuration)
+    "guestinfo.talos.config" = base64encode(data.talos_machine_configuration.control_plane[each.value].machine_configuration)
   }
 
   depends_on = [vsphere_folder.this]
@@ -162,9 +162,9 @@ resource "vsphere_virtual_machine" "control_plane" {
 }
 
 resource "vsphere_virtual_machine" "worker" {
-  count  = var.cluster_worker_count
-  name   = "${var.cluster_name}-worker-${count.index}"
-  folder = "${var.vsphere_datacenter}/vm/${var.cluster_name}"
+  for_each = local.worker_node_names
+  name     = each.value
+  folder   = "${var.vsphere_datacenter}/vm/${var.cluster_name}"
 
   datastore_id     = data.vsphere_datastore.this.id
   datacenter_id    = data.vsphere_datacenter.this.id
@@ -192,7 +192,7 @@ resource "vsphere_virtual_machine" "worker" {
   enable_disk_uuid = "true"
 
   extra_config = {
-    "guestinfo.talos.config" = base64encode(data.talos_machine_configuration.worker[count.index].machine_configuration)
+    "guestinfo.talos.config" = base64encode(data.talos_machine_configuration.worker[each.value].machine_configuration)
   }
 
   lifecycle {
