@@ -37,6 +37,19 @@ data "talos_machine_configuration" "control_plane" {
           nameservers = var.cluster_node_network_nameservers
         }
       }
+      cluster = {
+        discovery = {
+          enabled = true
+          registries = {
+            kubernetes = {
+              disabled = false
+            }
+            service = {
+              disabled = true
+            }
+          }
+        }
+      }
     }),
   ]
 }
@@ -73,6 +86,19 @@ data "talos_machine_configuration" "worker" {
           nameservers = var.cluster_node_network_nameservers
         }
       }
+      cluster = {
+        discovery = {
+          enabled = true
+          registries = {
+            kubernetes = {
+              disabled = false
+            }
+            service = {
+              disabled = true
+            }
+          }
+        }
+      }
     }),
   ]
 }
@@ -95,9 +121,31 @@ data "talos_cluster_kubeconfig" "this" {
   ]
 }
 
+data "talos_client_configuration" "this" {
+  cluster_name         = var.cluster_name
+  client_configuration = talos_machine_secrets.this.client_configuration
+
+  endpoints = [
+    for i in range(var.cluster_control_plane_count) : cidrhost(var.cluster_network_cidr, var.cluster_network_first_control_plane_hostnum + i)
+  ]
+  nodes = concat(
+    [
+      for i in range(var.cluster_control_plane_count) : cidrhost(var.cluster_network_cidr, var.cluster_network_first_control_plane_hostnum + i)
+    ],
+    [
+      for i in range(var.cluster_worker_count) : cidrhost(var.cluster_network_cidr, var.cluster_network_first_worker_hostnum + i)
+    ]
+  )
+}
+
 resource "local_file" "kubeconfig" {
   content  = data.talos_cluster_kubeconfig.this.kubeconfig_raw
   filename = "kubeconfig"
+}
+
+resource "local_file" "talosconfig" {
+  content  = data.talos_client_configuration.this.talos_config
+  filename = "talosconfig"
 }
 
 resource "vsphere_folder" "this" {
