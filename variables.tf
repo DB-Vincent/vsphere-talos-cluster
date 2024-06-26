@@ -51,6 +51,45 @@ variable "cluster_network_first_worker_hostnum" {
 }
 
 #
+# Virtual machine configuration
+#
+variable "control_plane_disk_space" {
+  type        = number
+  default     = 8
+  description = "Disk space (in GB) that should be added to the control plane virtual machines"
+}
+
+variable "control_plane_cpu" {
+  type        = number
+  default     = 2
+  description = "CPU cores which should be assigned to the control plane virtual machines"
+}
+
+variable "control_plane_memory" {
+  type        = number
+  default     = 2048
+  description = "Memory allocation (in MB) which should be assigned to the control plane virtual machines"
+}
+
+variable "worker_disk_space" {
+  type        = number
+  default     = 8
+  description = "Disk space (in GB) that should be added to the worker node virtual machines"
+}
+
+variable "worker_cpu" {
+  type        = number
+  default     = 4
+  description = "CPU cores which should be assigned to the worker node virtual machines"
+}
+
+variable "worker_memory" {
+  type        = number
+  default     = 8192
+  description = "Memory allocation (in MB) which should be assigned to the worker node virtual machines"
+}
+
+#
 # vSphere configuration
 #
 variable "vsphere_username" {

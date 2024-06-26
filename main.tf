@@ -166,8 +166,8 @@ resource "vsphere_virtual_machine" "control_plane" {
 
   wait_for_guest_net_timeout = -1
 
-  num_cpus = 2
-  memory   = 4096
+  num_cpus = var.control_plane_cpu
+  memory   = var.control_plane_memory
 
   ovf_deploy {
     remote_ovf_url = local.talos_template_url
@@ -175,7 +175,7 @@ resource "vsphere_virtual_machine" "control_plane" {
 
   disk {
     label = "disk0"
-    size  = 10
+    size  = var.control_plane_disk_space
   }
 
   network_interface {
@@ -213,8 +213,8 @@ resource "vsphere_virtual_machine" "worker" {
 
   wait_for_guest_net_timeout = -1
 
-  num_cpus = 4
-  memory   = 8192
+  num_cpus = var.worker_cpu
+  memory   = var.worker_memory
 
   ovf_deploy {
     remote_ovf_url = local.talos_template_url
@@ -222,7 +222,7 @@ resource "vsphere_virtual_machine" "worker" {
 
   disk {
     label = "disk0"
-    size  = 10
+    size  = var.worker_disk_space
   }
 
   network_interface {
@@ -241,7 +241,7 @@ resource "vsphere_virtual_machine" "worker" {
       hv_mode,
       folder,
       disk[0].io_share_count,
-      disk[0].thin_provisioned
+      disk[0].thin_provisioned,
     ]
   }
 

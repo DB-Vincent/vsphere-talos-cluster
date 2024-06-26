@@ -57,6 +57,9 @@ No modules.
 | <a name="input_cluster_node_network_nameservers"></a> [cluster\_node\_network\_nameservers](#input\_cluster\_node\_network\_nameservers) | The nameservers which should be used by the cluster nodes | `list(string)` | n/a | yes |
 | <a name="input_cluster_vip"></a> [cluster\_vip](#input\_cluster\_vip) | The virtual API which should be assigned to the control plane | `string` | n/a | yes |
 | <a name="input_cluster_worker_count"></a> [cluster\_worker\_count](#input\_cluster\_worker\_count) | Number of worker nodes that should be created | `number` | `1` | no |
+| <a name="input_control_plane_cpu"></a> [control\_plane\_cpu](#input\_control\_plane\_cpu) | CPU cores which should be assigned to the control plane virtual machines | `number` | `2` | no |
+| <a name="input_control_plane_disk_space"></a> [control\_plane\_disk\_space](#input\_control\_plane\_disk\_space) | Disk space (in GB) that should be added to the control plane virtual machines | `number` | `8` | no |
+| <a name="input_control_plane_memory"></a> [control\_plane\_memory](#input\_control\_plane\_memory) | Memory allocation (in MB) which should be assigned to the control plane virtual machines | `number` | `2048` | no |
 | <a name="input_talos_version"></a> [talos\_version](#input\_talos\_version) | Talos version used to retrieve the OVF template which will be used to start the nodes | `string` | n/a | yes |
 | <a name="input_vsphere_datacenter"></a> [vsphere\_datacenter](#input\_vsphere\_datacenter) | Name of the vSphere datacenter in which the cluster should be created | `string` | n/a | yes |
 | <a name="input_vsphere_datastore"></a> [vsphere\_datastore](#input\_vsphere\_datastore) | Name of the vSphere datastore which should be used for the cluster's storage | `string` | n/a | yes |
@@ -66,6 +69,9 @@ No modules.
 | <a name="input_vsphere_resource_pool"></a> [vsphere\_resource\_pool](#input\_vsphere\_resource\_pool) | Name of the vSphere resource pool in which the cluster should be created | `string` | `""` | no |
 | <a name="input_vsphere_server"></a> [vsphere\_server](#input\_vsphere\_server) | vSphere server url used to communicate with the target vSphere server | `string` | n/a | yes |
 | <a name="input_vsphere_username"></a> [vsphere\_username](#input\_vsphere\_username) | vSphere username used to authenticate with the target vSphere server | `string` | n/a | yes |
+| <a name="input_worker_cpu"></a> [worker\_cpu](#input\_worker\_cpu) | CPU cores which should be assigned to the worker node virtual machines | `number` | `4` | no |
+| <a name="input_worker_disk_space"></a> [worker\_disk\_space](#input\_worker\_disk\_space) | Disk space (in GB) that should be added to the worker node virtual machines | `number` | `8` | no |
+| <a name="input_worker_memory"></a> [worker\_memory](#input\_worker\_memory) | Memory allocation (in MB) which should be assigned to the worker node virtual machines | `number` | `8192` | no |
 
 ## Outputs
 
