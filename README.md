@@ -1,7 +1,63 @@
-# k8s-test-cluster
+#  vsphere-talos-cluster
+
+This a template for deploying a Kubernetes cluster on a vSphere environment using Talos and Terraform. This project aims to simplify the setup and management of a highly available Kubernetes cluster with the benefits of Talos' secure and immutable operating system.
+
+## Prerequisites
+
+- vSphere user with permissions to create virtual machines
+- Terraform installed ([instructions](https://developer.hashicorp.com/terraform/install?product_intent=terraform))
+- Talosctl installed ([instructions](https://www.talos.dev/v1.7/talos-guides/install/talosctl/))
+- Kubectl installed ([instructions](https://kubernetes.io/docs/tasks/tools/#kubectl))
+
+## Getting started
+
+1. **Clone the repository:**  
+
+```shell
+git clone https://github.com/yourusername/vsphere-talos-cluster.git  
+cd vsphere-talos-cluster
+```
+
+2. **Configure Terraform variables:**  
+
+Create a `terraform.tfvars` file andd fill in the desired configuration based on the required [inputs].(#inputs)  
+
+3. **Initialize Terraform:**  
+
+```shell
+terraform init
+```
+4. **Apply Terraform configuration:**  
+
+```shell
+terraform plan -out plan.out # validate that there are no strange issues
+terraform apply plan.out
+```
+
+5. **Configure Talos:** 
+
+This template automatically creates a `talosconfig` file with the correct configuration. You can configure talosctl to use that by exporting the `TALOSCONFIG` environment variable and pointing it to the file like this:
+
+```shell
+export TALOSCONFIG=$(pwd)/talosconfig
+```
+
+After this, you should be able to use the talosctl to talk to your nodes (e.g. by executing `talosctl time`).
+
+6. **Access your Kubernetes cluster:**  
+
+Same as with for the `talosconfig` file, the template automatically creates a preconfigured `kubeconfig` file. This file can be used by exporting the KUBECONFIG environment variable and pointing it to the file like this: 
+
+```shell
+export KUBECONFIG=$(pwd)/kubeconfig
+```
+
+After this, you should be able to use the kubectl to talk to your cluster (e.g. by executing `kubectl get nodes`).
+
+## Terraform code documentation
 
 <!-- BEGIN_TF_DOCS -->
-## Requirements
+### Requirements
 
 | Name | Version |
 |------|---------|
@@ -10,7 +66,7 @@
 | <a name="requirement_talos"></a> [talos](#requirement\_talos) | ~> 0.5 |
 | <a name="requirement_vsphere"></a> [vsphere](#requirement\_vsphere) | ~> 2.8 |
 
-## Providers
+### Providers
 
 | Name | Version |
 |------|---------|
@@ -18,11 +74,11 @@
 | <a name="provider_talos"></a> [talos](#provider\_talos) | 0.5.0 |
 | <a name="provider_vsphere"></a> [vsphere](#provider\_vsphere) | 2.8.1 |
 
-## Modules
+### Modules
 
 No modules.
 
-## Resources
+### Resources
 
 | Name | Type |
 |------|------|
@@ -43,7 +99,7 @@ No modules.
 | [vsphere_network.this](https://registry.terraform.io/providers/hashicorp/vsphere/latest/docs/data-sources/network) | data source |
 | [vsphere_resource_pool.this](https://registry.terraform.io/providers/hashicorp/vsphere/latest/docs/data-sources/resource_pool) | data source |
 
-## Inputs
+### Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
@@ -73,10 +129,23 @@ No modules.
 | <a name="input_worker_disk_space"></a> [worker\_disk\_space](#input\_worker\_disk\_space) | Disk space (in GB) that should be added to the worker node virtual machines | `number` | `8` | no |
 | <a name="input_worker_memory"></a> [worker\_memory](#input\_worker\_memory) | Memory allocation (in MB) which should be assigned to the worker node virtual machines | `number` | `8192` | no |
 
-## Outputs
+### Outputs
 
 | Name | Description |
 |------|-------------|
 | <a name="output_kubeconfig"></a> [kubeconfig](#output\_kubeconfig) | n/a |
 | <a name="output_talosconfig"></a> [talosconfig](#output\_talosconfig) | n/a |
 <!-- END_TF_DOCS -->
+
+## Contributing
+
+Contributions are welcome! Please submit a pull request or open an issue for any changes or enhancements.
+
+## Acknowledgements
+
+- [Talos Systems](https://www.talos.dev/)
+- [HashiCorp Terraform](https://www.terraform.io/)
+
+---
+
+Feel free to contact me for any further questions or support. Happy clustering 🖥️!
