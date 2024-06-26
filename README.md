@@ -20,7 +20,7 @@ cd vsphere-talos-cluster
 
 2. **Configure Terraform variables:**  
 
-Create a `terraform.tfvars` file andd fill in the desired configuration based on the required [inputs].(#inputs)  
+Create a `terraform.tfvars` file andd fill in the desired configuration based on the required [inputs](#inputs)  
 
 3. **Initialize Terraform:**  
 
