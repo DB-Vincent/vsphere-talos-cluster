@@ -61,7 +61,7 @@ After this, you should be able to use the kubectl to talk to your cluster (e.g. 
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.8 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.9 |
 | <a name="requirement_local"></a> [local](#requirement\_local) | ~> 2.5 |
 | <a name="requirement_talos"></a> [talos](#requirement\_talos) | ~> 0.5 |
 | <a name="requirement_vsphere"></a> [vsphere](#requirement\_vsphere) | ~> 2.8 |

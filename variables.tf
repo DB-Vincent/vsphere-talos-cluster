@@ -18,6 +18,11 @@ variable "cluster_worker_count" {
 variable "cluster_vip" {
   type        = string
   description = "The virtual API which should be assigned to the control plane"
+
+  validation {
+    condition     = can(regex("^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$", var.cluster_vip))
+    error_message = "Must be a valid IP address"
+  }
 }
 
 variable "cluster_endpoint" {
@@ -28,16 +33,34 @@ variable "cluster_endpoint" {
 variable "cluster_network_cidr" {
   type        = string
   description = "The network CIDR range (in slash notation; e.g 10.0.0.0/24) for the cluster nodes"
+
+  validation {
+    condition     = can(regex("^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}\\/\\b([0-9]|[12][0-9]|3[012])\\b$", var.cluster_network_cidr))
+    error_message = "Must be a valid IP address"
+  }
 }
 
 variable "cluster_node_network_gateway" {
   description = "The gateway through which the cluster nodes should send their traffic"
   type        = string
+
+  validation {
+    condition     = can(regex("^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$", var.cluster_node_network_gateway))
+    error_message = "Must be a valid IP address"
+  }
 }
 
 variable "cluster_node_network_nameservers" {
   description = "The nameservers which should be used by the cluster nodes"
   type        = list(string)
+
+  validation {
+    condition = length([
+      for nameserver in var.cluster_node_network_nameservers : true
+      if can(regex("^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)\\.?\\b){4}$", nameserver))
+    ]) == length(var.cluster_node_network_nameservers)
+    error_message = "Must be a valid IP address"
+  }
 }
 
 variable "cluster_network_first_control_plane_hostnum" {
@@ -134,15 +157,14 @@ variable "vsphere_network" {
 }
 
 #
-# Talos version
+# Talos configuration
 #
-
 variable "talos_version" {
   type        = string
   description = "Talos version used to retrieve the OVF template which will be used to start the nodes"
 
   validation {
     condition     = can(regex("^\\d+(\\.\\d+)+", var.talos_version))
-    error_message = "Must be a version number."
+    error_message = "Must be a version number"
   }
 }
